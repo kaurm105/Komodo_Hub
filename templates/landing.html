@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Komodo Hub - Wildlife Conservation Platform{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section text-white text-center position-relative">
+        <div class="hero-overlay"></div>
+        <div class="container py-5">
+            <h1 class="display-3 mb-4 fade-in">Welcome to Komodo Hub</h1>
+            <p class="lead mb-4 fade-in-delay">Empowering Conservation Through Community and Education</p>
+            <div class="btn-group">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">Sign Up</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section py-5 bg-dark">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-paw fa-3x mb-3 text-primary"></i>
+                        <h3 class="counter">150+</h3>
+                        <p class="text-muted">Species Tracked</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-users fa-3x mb-3 text-success"></i>
+                        <h3 class="counter">5,000+</h3>
+                        <p class="text-muted">Community Members</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-map-marker-alt fa-3x mb-3 text-danger"></i>
+                        <h3 class="counter">10,000+</h3>
+                        <p class="text-muted">Wildlife Sightings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5 bg-darker">
+        <div class="container">
+            <h2 class="text-center mb-5 text-light">Why Join Komodo Hub?</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-reader text-primary"></i>
+                        </div>
+                        <h3>Interactive Learning</h3>
+                        <p>Access comprehensive educational resources and interactive quizzes about wildlife conservation.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line text-success"></i>
+                        </div>
+                        <h3>Track Progress</h3>
+                        <p>Monitor your conservation journey with detailed analytics and achievement systems.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users text-info"></i>
+                        </div>
+                        <h3>Community</h3>
+                        <p>Connect with fellow conservationists and share your wildlife experiences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conservation Facts -->
+    <section class="facts-section py-5 bg-dark">
+        <div class="container">
+            <h2 class="text-center mb-5 text-light">Conservation Facts</h2>
+            <div class="fact-carousel">
+                <div class="fact-item">
+                    <h4 class="text-primary">Did You Know?</h4>
+                    <p>Komodo dragons can eat up to 80% of their body weight in a single meal!</p>
+                </div>
+                <!-- Add more facts -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section text-white text-center py-5">
+        <div class="container">
+            <h2 class="mb-4">Ready to Start Your Conservation Journey?</h2>
+            <p class="lead mb-4">Join our community and make a difference in wildlife conservation.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Get Started Now</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Hero Section */
+.hero-section {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1504173010664-32509aeebb62');
+    background-size: cover;
+    background-position: center;
+    min-height: 80vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+.fade-in-delay {
+    animation: fadeIn 1s ease-in 0.5s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Background Colors */
+.bg-darker {
+    background-color: #1a1a1a;
+}
+
+.bg-dark {
+    background-color: #212529;
+}
+
+/* Stats Section */
+.stat-card {
+    padding: 2rem;
+    border-radius: 10px;
+    background: #2a2a2a;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    margin: 1rem;
+    color: #fff;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: #333;
+}
+
+.stat-card .counter {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Feature Cards */
+.feature-card {
+    padding: 2rem;
+    border-radius: 10px;
+    background: #2a2a2a;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease;
+    margin: 1rem;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    background: #333;
+    border-color: #007bff;
+}
+
+.feature-card h3 {
+    color: #fff;
+    margin: 1rem 0;
+}
+
+.feature-card p {
+    color: #ccc;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(45deg, #1a472a, #2a623d);
+    position: relative;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.cta-section .container {
+    position: relative;
+}
+
+/* Facts Section */
+.fact-carousel {
+    padding: 2rem;
+    background: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.fact-item {
+    text-align: center;
+    padding: 1rem;
+    color: #fff;
+}
+
+.fact-item p {
+    color: #ccc;
+    margin-top: 1rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #2a623d;
+    border-color: #2a623d;
+}
+
+.btn-primary:hover {
+    background-color: #1a472a;
+    border-color: #1a472a;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate statistics
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = parseInt(counter.innerText);
+        let count = 0;
+        const speed = 2000 / target;
+
+        function updateCount() {
+            const increment = target / 200;
+            if(count < target) {
+                count += increment;
+                counter.innerText = Math.ceil(count) + '+';
+                setTimeout(updateCount, speed);
+            } else {
+                counter.innerText = target + '+';
+            }
+        }
+        updateCount();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Student Progress - {{ student.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% if current_user.role == 'teacher' %}
+                    <li class="breadcrumb-item"><a href="{{ url_for('progress.student_list') }}">Students</a></li>
+                    {% else %}
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item active">{{ student.username }}'s Progress</li>
+                </ol>
+            </nav>
+            <h1>
+                {% if current_user.id == student.id %}
+                My Learning Progress
+                {% else %}
+                {{ student.username }}'s Learning Progress
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Student Information</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-light rounded-circle p-3 me-3">
+                            <i class="fas fa-user fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ student.username }}</h6>
+                            <p class="text-muted mb-0">{{ student.email }}</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Joined:</strong> {{ student.created_at|datetime if student.created_at else 'N/A' }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Last Active:</strong> {{ student.last_login|datetime if student.last_login else 'Never' }}
+                    </div>
+                    <div class="mb-3">
+                        {% set total_completed = progress_data|selectattr('completed', 'equalto', true)|list|length %}
+                        {% set total_items = progress_data|length %}
+                        {% set completion_percent = (total_completed / total_items * 100)|int if total_items > 0 else 0 %}
+                        
+                        <strong>Overall Progress:</strong>
+                        <div class="progress mt-2">
+                            <div class="progress-bar" role="progressbar" style="width: {{ completion_percent }}%;" 
+                                aria-valuenow="{{ completion_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ completion_percent }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="progressTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="resources-tab" data-bs-toggle="tab" 
+                                   data-bs-target="#resources" type="button" role="tab" 
+                                   aria-controls="resources" aria-selected="true">
+                                Educational Resources
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="species-tab" data-bs-toggle="tab" 
+                                   data-bs-target="#species" type="button" role="tab" 
+                                   aria-controls="species" aria-selected="false">
+                                Species Knowledge
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="activities-tab" data-bs-toggle="tab" 
+                                   data-bs-target="#activities" type="button" role="tab" 
+                                   aria-controls="activities" aria-selected="false">
+                                Conservation Activities
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="progressTabContent">
+                        <div class="tab-pane fade show active" id="resources" role="tabpanel" aria-labelledby="resources-tab">
+                            <h5 class="mb-3">Educational Resources Progress</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Resource Title</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            {% if current_user.role == 'teacher' %}
+                                            <th>Actions</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for resource in resources %}
+                                        {% set progress = progress_data|selectattr('content_type', 'equalto', 'resource')|selectattr('content_id', 'equalto', resource.id)|first %}
+                                        <tr>
+                                            <td>{{ resource.title }}</td>
+                                            <td>{{ resource.resource_type }}</td>
+                                            <td>
+                                                {% if progress and progress.completed %}
+                                                <span class="badge bg-success">Completed</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">Not Started</span>
+                                                {% endif %}
+                                            </td>
+                                            {% if current_user.role == 'teacher' %}
+                                            <td>
+                                                <form method="POST" action="{{ url_for('progress.update_progress', student_id=student.id) }}">
+                                                    <input type="hidden" name="content_type" value="resource">
+                                                    <input type="hidden" name="content_id" value="{{ resource.id }}">
+                                                    <input type="hidden" name="completed" value="{{ 'false' if progress and progress.completed else 'true' }}">
+                                                    <button type="submit" class="btn btn-sm {% if progress and progress.completed %}btn-outline-secondary{% else %}btn-outline-success{% endif %}">
+                                                        {% if progress and progress.completed %}
+                                                        <i class="fas fa-times"></i> Mark Incomplete
+                                                        {% else %}
+                                                        <i class="fas fa-check"></i> Mark Complete
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="species" role="tabpanel" aria-labelledby="species-tab">
+                            <h5 class="mb-3">Species Knowledge Progress</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Species</th>
+                                            <th>Conservation Status</th>
+                                            <th>Knowledge Status</th>
+                                            {% if current_user.role == 'teacher' %}
+                                            <th>Actions</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for species_item in species %}
+                                        {% set progress = progress_data|selectattr('content_type', 'equalto', 'species')|selectattr('content_id', 'equalto', species_item.id)|first %}
+                                        <tr>
+                                            <td>{{ species_item.name }}</td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if species_item.conservation_status == 'CR' %}bg-danger
+                                                    {% elif species_item.conservation_status == 'EN' %}bg-warning text-dark
+                                                    {% elif species_item.conservation_status == 'VU' %}bg-info text-dark
+                                                    {% else %}bg-success
+                                                    {% endif %}">
+                                                    {{ species_item.conservation_status }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if progress and progress.completed %}
+                                                <span class="badge bg-success">Studied</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">Not Started</span>
+                                                {% endif %}
+                                            </td>
+                                            {% if current_user.role == 'teacher' %}
+                                            <td>
+                                                <form method="POST" action="{{ url_for('progress.update_progress', student_id=student.id) }}">
+                                                    <input type="hidden" name="content_type" value="species">
+                                                    <input type="hidden" name="content_id" value="{{ species_item.id }}">
+                                                    <input type="hidden" name="completed" value="{{ 'false' if progress and progress.completed else 'true' }}">
+                                                    <button type="submit" class="btn btn-sm {% if progress and progress.completed %}btn-outline-secondary{% else %}btn-outline-success{% endif %}">
+                                                        {% if progress and progress.completed %}
+                                                        <i class="fas fa-times"></i> Mark Incomplete
+                                                        {% else %}
+                                                        <i class="fas fa-check"></i> Mark Complete
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+                            <h5 class="mb-3">Conservation Activities Progress</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Program</th>
+                                            <th>Dates</th>
+                                            <th>Participation</th>
+                                            {% if current_user.role == 'teacher' %}
+                                            <th>Actions</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for program in programs %}
+                                        {% set progress = progress_data|selectattr('content_type', 'equalto', 'program')|selectattr('content_id', 'equalto', program.id)|first %}
+                                        <tr>
+                                            <td>{{ program.title }}</td>
+                                            <td>{{ program.start_date|datetime('%Y-%m-%d') }} to {{ program.end_date|datetime('%Y-%m-%d') }}</td>
+                                            <td>
+                                                {% if progress and progress.completed %}
+                                                <span class="badge bg-success">Participated</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">Not Participated</span>
+                                                {% endif %}
+                                            </td>
+                                            {% if current_user.role == 'teacher' %}
+                                            <td>
+                                                <form method="POST" action="{{ url_for('progress.update_progress', student_id=student.id) }}">
+                                                    <input type="hidden" name="content_type" value="program">
+                                                    <input type="hidden" name="content_id" value="{{ program.id }}">
+                                                    <input type="hidden" name="completed" value="{{ 'false' if progress and progress.completed else 'true' }}">
+                                                    <button type="submit" class="btn btn-sm {% if progress and progress.completed %}btn-outline-secondary{% else %}btn-outline-success{% endif %}">
+                                                        {% if progress and progress.completed %}
+                                                        <i class="fas fa-times"></i> Mark Not Participated
+                                                        {% else %}
+                                                        <i class="fas fa-check"></i> Mark Participated
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

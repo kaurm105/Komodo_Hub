@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-chalkboard-teacher me-2"></i>Teacher Dashboard</h2>
+        <p class="text-muted lead">Manage educational resources and track conservation efforts.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Species Management -->
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-paw me-2"></i>Species Management
+                </h4>
+                <p class="text-muted mb-4">Add and manage species information in the database.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('species.list') }}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>View All Species
+                    </a>
+                    <a href="{{ url_for('species.add') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Add New Species
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum Management -->
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-comments me-2"></i>Forum Management
+                </h4>
+                <p class="text-muted mb-4">Moderate discussions and manage forum categories.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('forum.index') }}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>View Forum
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Educational Resources -->
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-book me-2"></i>Educational Resources
+                </h4>
+                <p class="text-muted mb-4">Create and manage learning materials for students.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('library.resources') }}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>View Resources
+                    </a>
+                    <a href="{{ url_for('library.add_resource') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Add New Resource
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Progress Management -->
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-user-graduate me-2"></i>Student Management
+                </h4>
+                <p class="text-muted mb-4">Track student progress and manage registrations.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('progress.student_list') }}" class="btn btn-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Track Student Progress
+                    </a>
+                    <a href="{{ url_for('auth.generate_token') }}" class="btn btn-info">
+                        <i class="fas fa-key me-2"></i>Generate Registration Tokens
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

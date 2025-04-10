@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Registration Tokens{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Generate Student Registration Tokens</h1>
+            <p class="lead">Create tokens for your students to register with their accounts.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Generate New Token</h5>
+                    <form method="POST" action="{{ url_for('auth.generate_token') }}">
+                        {{ form.hidden_tag() }}
+                        {% if form.notes %}
+                        <div class="mb-3">
+                            {{ form.notes.label(class="form-label") }}
+                            {{ form.notes(class="form-control", rows=3) }}
+                            <div class="form-text">Optional notes for your reference.</div>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Generate Token</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Registration Tokens</h5>
+                </div>
+                <div class="card-body">
+                    {% if tokens %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Created</th>
+                                    <th>Expires</th>
+                                    <th>Status</th>
+                                    <th>Used By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for token in tokens %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <code class="me-2">{{ token.token }}</code>
+                                            <button class="btn btn-sm btn-outline-secondary copy-btn" 
+                                                   data-clipboard-text="{{ token.token }}"
+                                                   title="Copy to clipboard">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{{ token.created_at|datetime }}</td>
+                                    <td>{{ token.expires_at|datetime }}</td>
+                                    <td>
+                                        {% if token.used %}
+                                            <span class="badge bg-secondary">Used</span>
+                                        {% elif token.expires_at < now() %}
+                                            <span class="badge bg-danger">Expired</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Valid</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if token.used and token.used_by %}
+                                            {{ token.used_by.username }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You haven't generated any tokens yet. Use the form to create your first token.
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-3">
+                        <h6>How to use tokens:</h6>
+                        <ol>
+                            <li>Generate a new token using the form.</li>
+                            <li>Copy the token and share it with your student.</li>
+                            <li>Ask your student to register at: <code>{{ url_for('auth.register_student', _external=True) }}</code></li>
+                            <li>The student will need to enter the token during registration.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize clipboard copy functionality
+    var clipboard = new ClipboardJS('.copy-btn');
+    
+    clipboard.on('success', function(e) {
+        // Show temporary success feedback
+        var btn = e.trigger;
+        var originalTitle = btn.getAttribute('title');
+        btn.setAttribute('title', 'Copied!');
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-success');
+        
+        setTimeout(function() {
+            btn.setAttribute('title', originalTitle);
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-secondary');
+        }, 1500);
+        
+        e.clearSelection();
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

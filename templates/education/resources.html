@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Educational Resources{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="text-light"><i class="fas fa-graduation-cap me-2"></i>Educational Resources</h1>
+            <p class="lead text-light">Explore conservation knowledge and research materials.</p>
+        </div>
+        {% if current_user.role == 'teacher' %}
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('education.add_resource') }}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Add New Resource
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card bg-dark mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control bg-dark text-light border-secondary" 
+                           placeholder="Search resources..." value="{{ search_query or '' }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="tag" class="form-select bg-dark text-light border-secondary">
+                        <option value="">All Tags</option>
+                        {% for tag in tags %}
+                        <option value="{{ tag.name }}" {% if current_tag == tag.name %}selected{% endif %}>
+                            {{ tag.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="type" class="form-select bg-dark text-light border-secondary">
+                        <option value="">All Types</option>
+                        {% for type in resource_types %}
+                        <option value="{{ type }}" {% if current_type == type %}selected{% endif %}>
+                            {{ type|title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resources Grid -->
+    <div class="row g-4">
+        {% for resource in resources %}
+        <div class="col-md-6">
+            <div class="card bg-dark h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title text-light">{{ resource.title }}</h5>
+                        <span class="badge bg-primary">{{ resource.resource_type|title }}</span>
+                    </div>
+                    <p class="card-text text-muted">{{ resource.content[:200] }}...</p>
+
+                    {% if resource.tags %}
+                    <div class="mb-3">
+                        {% for tag in resource.tags %}
+                        <a href="?tag={{ tag.name }}" class="badge bg-secondary text-decoration-none me-1">
+                            {{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="text-muted small">
+                        <i class="fas fa-user me-1"></i>{{ resource.author.username }}<br>
+                        <i class="fas fa-calendar me-1"></i>{{ resource.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                </div>
+                <div class="card-footer bg-dark border-secondary">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" 
+                            data-bs-target="#resourceModal{{ resource.id }}">
+                        Read More
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Modal -->
+        <div class="modal fade" id="resourceModal{{ resource.id }}" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header border-bottom border-secondary">
+                        <h5 class="modal-title text-light">{{ resource.title }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <span class="badge bg-primary">{{ resource.resource_type|title }}</span>
+                            {% for tag in resource.tags %}
+                            <span class="badge bg-secondary ms-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="text-light">{{ resource.content }}</div>
+                        <div class="mt-4 text-muted small">
+                            <i class="fas fa-user me-1"></i>{{ resource.author.username }}<br>
+                            <i class="fas fa-calendar me-1"></i>{{ resource.created_at.strftime('%B %d, %Y') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No resources found matching your criteria.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.hover-lift {
+    transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    border: 1px solid #333;
+}
+
+.modal-content {
+    border: 1px solid #333;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+</style>
+{% endblock %}

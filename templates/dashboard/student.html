@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-user-graduate me-2"></i>Welcome, {{ current_user.username }}!</h2>
+        <p class="text-muted lead">Track your progress and continue learning about conservation.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">Learning Progress</h4>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" 
+                         style="width: 0%">
+                        0%
+                    </div>
+                </div>
+                <p class="mb-3">Start exploring to increase your knowledge!</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('species.list') }}" class="btn btn-primary">
+                        <i class="fas fa-paw me-2"></i>Explore Species
+                    </a>
+                    <a href="{{ url_for('forum.index') }}" class="btn btn-success">
+                        <i class="fas fa-comments me-2"></i>Join Discussions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">Featured Species</h4>
+                {% if featured_species %}
+                <div class="list-group">
+                    {% for species in featured_species %}
+                    <div class="list-group-item">
+                        <h6 class="mb-1">{{ species.name }}</h6>
+                        <small class="text-muted">{{ species.conservation_status }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No species available at the moment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <h1>Edit User</h1>
+            <p class="lead">Update information for {{ user.username }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to User List
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">User Information</h4>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('admin.edit_user', user_id=user.id) }}" method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="student" {% if user.role == 'student' %}selected{% endif %}>Student</option>
+                            <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Teacher</option>
+                            <option value="community" {% if user.role == 'community' %}selected{% endif %}>Community Member</option>
+                            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="created_at" class="form-label">Created At</label>
+                        <input type="text" class="form-control" id="created_at" value="{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Leave blank to keep current password">
+                        <div class="form-text">Only fill this if you want to change the password</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" {% if user.is_admin %}checked{% endif %} {% if user.id == current_user.id and user.is_admin %}disabled{% endif %}>
+                            <label class="form-check-label" for="is_admin">
+                                Administrator Access
+                            </label>
+                            {% if user.id == current_user.id and user.is_admin %}
+                            <input type="hidden" name="is_admin" value="on">
+                            <div class="form-text text-danger">You cannot remove your own admin privileges</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">User Activity</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Species Created</h5>
+                            <p class="card-text display-4 text-center">{{ user.species_created|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Forum Threads</h5>
+                            <p class="card-text display-4 text-center">{{ user.forum_threads|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Forum Posts</h5>
+                            <p class="card-text display-4 text-center">{{ user.forum_posts|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

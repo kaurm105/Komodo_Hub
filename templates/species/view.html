@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}{{ species.name }} - Species Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card bg-dark">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="display-4 text-light">{{ species.name }}</h1>
+                    <h3 class="text-muted font-italic">{{ species.scientific_name }}</h3>
+                    
+                    <div class="mt-4">
+                        <span class="badge rounded-pill {{ 'bg-danger' if species.conservation_status == 'Critically Endangered'
+                                                    else 'bg-warning text-dark' if species.conservation_status == 'Endangered'
+                                                    else 'bg-info' }}">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            {{ species.conservation_status }}
+                        </span>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="text-forest">About</h4>
+                        <p class="text-light">{{ species.description }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="text-forest">Key Information</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-users text-forest fa-2x"></i>
+                                <div>
+                                    <h5 class="text-light">Population</h5>
+                                    <p class="text-muted">{{ species.population if species.population else 'Unknown' }}</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-globe-asia text-forest fa-2x"></i>
+                                <div>
+                                    <h5 class="text-light">Habitat</h5>
+                                    <p class="text-muted">{{ species.habitat }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="text-forest">Threats</h4>
+                        <p class="text-light">{{ species.threats }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card bg-darker">
+                        <div class="card-body">
+                            <h4 class="text-forest mb-3">Report a Sighting</h4>
+                            <p class="text-muted">Have you seen this species? Report your sighting to help with conservation efforts.</p>
+                            <button class="btn btn-forest w-100" data-bs-toggle="modal" data-bs-target="#reportSightingModal">
+                                <i class="fas fa-binoculars me-2"></i>Report Sighting
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Sighting Modal -->
+<div class="modal fade" id="reportSightingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title text-light">Report {{ species.name }} Sighting</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('species.report_sighting', species_id=species.id) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="location" class="form-label text-light">Location</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" id="location" name="location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sighting_date" class="form-label text-light">Date of Sighting</label>
+                        <input type="date" class="form-control bg-dark text-light border-secondary" id="sighting_date" name="sighting_date"
+                               required value="{{ datetime.now().strftime('%Y-%m-%d') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label text-light">Description</label>
+                        <textarea class="form-control bg-dark text-light border-secondary" id="description" name="description" rows="3"
+                                  placeholder="Describe what you observed..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-outline-forest" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-forest">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-forest {
+    color: #2a623d;
+}
+
+.bg-darker {
+    background-color: #121212;
+}
+
+.btn-forest {
+    background: #2a623d;
+    color: white;
+    border: none;
+}
+
+.btn-forest:hover {
+    background: #1a472a;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-forest {
+    color: #2a623d;
+    border: 2px solid #2a623d;
+    background: transparent;
+}
+
+.btn-outline-forest:hover {
+    background: #2a623d;
+    color: white;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #121212;
+    border-radius: 0.5rem;
+    border: 1px solid #333;
+}
+
+.info-item h5 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.info-item p {
+    margin: 0.5rem 0 0 0;
+}
+
+.font-italic {
+    font-style: italic;
+}
+</style>
+{% endblock %}

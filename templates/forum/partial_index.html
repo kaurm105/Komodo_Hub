@@ -1,0 +1,143 @@
+<!-- Forum Content Partial -->
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="text-light"><i class="fas fa-binoculars me-2"></i>Wildlife Sightings & Challenges</h1>
+            <p class="lead text-light">Track wildlife, earn points, and compete with other conservationists!</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reportSightingModal">
+                <i class="fas fa-plus me-2"></i>Report Sighting
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Left Column: Map and Recent Sightings -->
+        <div class="col-md-8">
+            <!-- Interactive Map -->
+            <div class="card bg-dark mb-4">
+                <div class="card-body">
+                    <h4 class="text-light mb-3"><i class="fas fa-map-marked-alt me-2"></i>Wildlife Sightings Map</h4>
+                    <div id="sightingsMap" style="height: 400px;"></div>
+                </div>
+            </div>
+
+            <!-- Recent Sightings -->
+            <div class="card bg-dark">
+                <div class="card-header">
+                    <h4 class="text-light mb-0"><i class="fas fa-eye me-2"></i>Recent Sightings</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for sighting in recent_sightings %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark border-secondary h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-light">{{ sighting.species.name }}</h5>
+                                    <p class="text-muted">{{ sighting.description[:100] }}...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            By {{ sighting.observer.username }}
+                                        </small>
+                                        <small class="text-muted">
+                                            {{ sighting.created_at|timeago }}
+                                        </small>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span class="badge bg-primary">{{ sighting.location }}</span>
+                                        {% if sighting.status == 'verified' %}
+                                        <span class="badge bg-success">Verified</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Challenges and Leaderboard -->
+        <div class="col-md-4">
+            <!-- Active Challenges -->
+            <div class="card bg-dark mb-4">
+                <div class="card-header">
+                    <h4 class="text-light mb-0"><i class="fas fa-trophy me-2"></i>Active Challenges</h4>
+                </div>
+                <div class="card-body">
+                    {% for challenge in active_challenges %}
+                    <div class="mb-3">
+                        <h5 class="text-light">{{ challenge.question_text }}</h5>
+                        <p class="text-muted small">
+                            <i class="fas fa-star me-1"></i>{{ challenge.points }} points
+                            <span class="ms-2">
+                                <i class="fas fa-signal me-1"></i>{{ challenge.difficulty }}
+                            </span>
+                        </p>
+                        <a href="{{ url_for('forum.species_challenge', id=challenge.id) }}" 
+                           class="btn btn-outline-success btn-sm">Take Challenge</a>
+                    </div>
+                    {% if not loop.last %}<hr class="border-secondary">{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Community Leaderboard -->
+            <div class="card bg-dark">
+                <div class="card-header">
+                    <h4 class="text-light mb-0"><i class="fas fa-crown me-2"></i>Top Contributors</h4>
+                </div>
+                <div class="card-body">
+                    {% for user, sightings_count, challenge_points in leaderboard %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <span class="badge rounded-pill bg-primary fs-5">{{ loop.index }}</span>
+                        </div>
+                        <div>
+                            <h6 class="text-light mb-0">{{ user.username }}</h6>
+                            <small class="text-muted">
+                                {{ sightings_count }} sightings, {{ challenge_points or 0 }} challenge points
+                            </small>
+                        </div>
+                    </div>
+                    {% if not loop.last %}<hr class="border-secondary my-2">{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Integration Script -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('sightingsMap').setView([37.7749, -122.4194], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Fetch and display sightings
+    fetch('{{ url_for('forum.get_sightings_map_data') }}')
+        .then(response => response.json())
+        .then(sightings => {
+            sightings.forEach(sighting => {
+                L.marker([sighting.lat, sighting.lng])
+                    .bindPopup(`
+                        <strong>${sighting.species}</strong><br>
+                        ${sighting.description}<br>
+                        <small>Reported by: ${sighting.observer}<br>
+                        Date: ${sighting.date}</small>
+                    `)
+                    .addTo(map);
+            });
+        });
+});
+</script>

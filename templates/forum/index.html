@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Forum - Komodo Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Forum Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-light"><i class="fas fa-comments me-2"></i>Conservation Forum</h1>
+            <p class="lead text-muted">Join discussions about wildlife conservation and share your insights.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Forum Categories -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-folder me-2"></i>Forum Categories</h4>
+                </div>
+                <div class="card-body">
+                    {% if categories %}
+                        <div class="list-group">
+                        {% for category in categories %}
+                            <a href="{{ url_for('forum.view_category', id=category.id) }}" 
+                               class="list-group-item list-group-item-action bg-dark">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ category.name }}</h5>
+                                </div>
+                                <p class="mb-1 text-muted">{{ category.description }}</p>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No categories available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Threads -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Discussions</h4>
+                </div>
+                <div class="card-body">
+                    {% if recent_threads %}
+                        <div class="list-group">
+                        {% for thread in recent_threads %}
+                            <a href="{{ url_for('forum.view_thread', id=thread.id) }}" 
+                               class="list-group-item list-group-item-action bg-dark">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ thread.title }}</h5>
+                                    <small class="text-muted">{{ thread.created_at.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <p class="mb-1">{{ thread.content[:200] }}...</p>
+                                <small class="text-muted">By {{ thread.author.username }}</small>
+                            </a>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No recent discussions.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-plus me-2"></i>Start a Discussion</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Share your thoughts and experiences with the community.</p>
+                    <a href="{{ url_for('forum.create_thread', category_id=categories[0].id if categories else 1) }}" 
+                       class="btn btn-primary btn-block">
+                        <i class="fas fa-edit me-2"></i>New Thread
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

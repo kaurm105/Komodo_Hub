@@ -1,0 +1,39 @@
+A Digital Platform for Community-Supported Animal Conservation 
+ 
+BACKGROUND 
+The Problems 
+Badan Pusat Statistik, the Indonesian Bureau of Statistics, has recently published data on the 
+country’s endangered endemic species. Despite spending millions of dollars on conservation 
+efforts, the government might have not seen any significant breakthroughs in the population 
+of some species. The success of Komodo has been largely exclusive, and the world is now left 
+with merely less than 100 Sumatran Tigers, Javan Rhinoceros, Bali Mynas, Javan Eagles, 
+Tarsius, and Celebes Crested Macaques, respectively. Habitat loss remains the primary cause 
+of the problems. Other causes include habitat changes, commercial over-exploitation, the 
+introduction of harmful non-native species, pollution, and the spread of diseases. 
+ 
+ 
+ 
+The Vision 
+Nevertheless, people have started to realize that this is not just the government’s struggle 
+and that communities play an important role in the initiative. Local communities, especially, 
+are the primary stakeholders in such a conservation project, and their involvement is crucial 
+©Manik Hapsara 08/2023 
+to its success. In 2022, Yayasan Komodo (the Komodo Foundation), a not-for-profit 
+organization, was given a substantial amount of funds to initiate the development of a 
+revolutionary digital platform for animal conservation in Indonesia. The proposed digital 
+platform, Komodo Hub, is expected to be fully operational by the end of 2024. Komodo Hub 
+will be the national standard for a conservation digital tool to explore, identify, and protect 
+Indonesian endemic species, educate people about animal conservation, and endorse the 
+involvement of communities. 
+Image source: The Internet 
+Yayasan Komodo has envisioned Komodo Hub to be available to citizens nationwide, from 
+remote indigenous communities to regional towns and urban areas. They aim to involve 
+REQUIREMENT COLLECTION 
+communities and primary schools in the protection and promotion of domestic endangered 
+species. The digital platform will provide registered and non-registered users equal 
+opportunity to access the rich knowledge base of Indonesian endangered endemic species 
+and get involved in a broad range of conservation programs. Komodo Hub will allow 
+registered users to further extend its knowledge base by sharing their records of the species. 
+The following are some interviews conducted during the inception phase. In reality, the 
+requirement collection might have involved more stakeholders and potential system users. 
+However, for the sake of clarity and simplicity
