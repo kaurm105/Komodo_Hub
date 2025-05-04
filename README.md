@@ -1,7 +1,7 @@
 # Komodo Hub - Digital Platform for Community-Supported Animal Conservation
 
 ## Overview
-Komodo Hub is a Flask-based web application designed to support animal conservation efforts through community engagement. The platform provides role-based access for teachers, students, and community members to participate in wildlife conservation activities.
+Komodo Hub is a Flask-based web application designed to support animal conservation efforts through community engagement. The platform provides role-based access for teachers,students and community members to participate in wildlife conservation activities.
 
 ## Features
 
